@@ -74,4 +74,3 @@ class FlowerDB():
         c.close()
 
         return result
-
