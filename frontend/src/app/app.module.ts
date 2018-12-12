@@ -5,11 +5,12 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 
 import { AppComponent } from "./app.component";
 import { FlowerApiService } from "./api/api.service";
+import { BingApiService } from "./bing/bing.service";
 
 @NgModule({
   declarations: [AppComponent],
   imports: [BrowserModule, HttpClientModule, NgbModule],
-  providers: [FlowerApiService],
+  providers: [FlowerApiService, BingApiService],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

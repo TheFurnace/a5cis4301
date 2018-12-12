@@ -1,6 +1,7 @@
 import { Component } from "@angular/core";
 import { FlowerApiService } from "./api/api.service";
 import { flower, sighting } from "./api/api.model";
+import { BingApiService } from "./bing/bing.service";
 
 @Component({
   selector: "app-root",
@@ -8,22 +9,40 @@ import { flower, sighting } from "./api/api.model";
   styleUrls: ["./app.component.scss"]
 })
 export class AppComponent {
-  title = "frontend";
+  title = "A5CIS4301";
   flowerList: string[] = [];
+  flowerImages: { [key: string]: string } = {};
   flowerDetails: flower;
   flowerSightings: sighting;
 
   updateSuccess: boolean;
   insertSuccess: boolean;
 
-  constructor(private api: FlowerApiService) {
+  constructor(private api: FlowerApiService, private bing: BingApiService) {
     this.getFlowerList();
+  }
+
+  private getFlowerPicture(flower: string) {
+    if (!this.flowerImages[flower]) {
+      this.bing.getImageFromQuery(flower).then(
+        res => {
+          let image = this.bing.getURLFromResult(res);
+          this.flowerImages[name] = image;
+        },
+        err => {
+          return "http://www.browsertechnicalsupportnumbers.com/wp-content/uploads/2017/08/Troubleshoot-Opera-Browser-Incompatibility-Error.png";
+        }
+      );
+    }
   }
 
   private getFlowerList() {
     this.api.getFlowerList().subscribe(
       res => {
         this.flowerList = res;
+        this.flowerList.forEach(name => {
+          this.getFlowerPicture(name);
+        });
       },
       err => {
         this.flowerList = ["Error: " + err];
