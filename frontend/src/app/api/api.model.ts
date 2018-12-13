@@ -8,5 +8,5 @@ export interface sighting {
     name: string,
     person: string,
     location: string,
-    sighted: Date
+    sighted: string
 }

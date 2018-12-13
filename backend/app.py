@@ -1,10 +1,13 @@
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 import logging as log
+import json
 
 from .sql.db import FlowerDB
 
 # creating the Flask application
 app = Flask(__name__)
+CORS(app)
 log.basicConfig(filename="a5.log", level=log.INFO)
 db = FlowerDB()
 
@@ -65,11 +68,12 @@ def update_flowers(flower=None):
         raise InvalidUsage(
             "No flower name specified (/flowers/<flower>)", 404)
 
-    genus = request.args.get("genus")
-    species = request.args.get("species")
+    data = request.get_json()
+    genus = data['genus']
+    species = data['species']
 
-    if genus is None or species is None:
-        raise InvalidUsage("Missing parameter (genus, species)", 422)
+    if not len(genus) or not len(species):
+        raise InvalidUsage("Missing parameter (genus, species) received ({0},{1}) instead".format(genus, species), 422)
 
     conn = db.create_connection()
     result = db.update_flowers(conn, flower, genus, species)
@@ -80,7 +84,7 @@ def update_flowers(flower=None):
         conn.commit()
 
     conn.close()
-    return("Successfuly updated record")
+    return(jsonify("Successfuly updated record"))
 
 
 @app.route("/flowers/<flower>/sightings", methods=["GET"])
@@ -115,9 +119,10 @@ def insert_new_sighting(flower=None):
         raise InvalidUsage(
             "No flower name specified (/flowers/<flower>/sightings)", 404)
 
-    person = request.args.get("person")
-    location = request.args.get("location")
-    sighted = request.args.get("sighted")
+    data = request.get_json()
+    person = data["person"]
+    location = data["location"]
+    sighted = data["sighted"]
 
     if person is None or location is None or sighted is None:
         raise InvalidUsage(
@@ -132,7 +137,7 @@ def insert_new_sighting(flower=None):
         conn.commit()
 
     conn.close()
-    return("Successfully inserted new sighting")
+    return(jsonify("Successfully inserted new sighting"))
 
 
 # Code from flask docs

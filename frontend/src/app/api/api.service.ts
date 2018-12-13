@@ -9,39 +9,40 @@ import { environment as env } from "../../environments/environment";
 export class FlowerApiService {
   constructor(private http: HttpClient) {}
 
-  private static _handleError(err: HttpErrorResponse | any) {
-    return Observable.throw(
-      err.message || "Error: Unable to complete request."
-    );
-  }
-
   getFlowerList(): Observable<string[]> {
     return this.http
       .get<string[]>(`${env.API_URL}/flowers`)
-      .pipe(catchError(FlowerApiService._handleError));
   }
 
   getFlowerDetails(flower: string): Observable<flower> {
     return this.http
       .get<flower>(`${env.API_URL}/flowers/${flower}`)
-      .pipe(catchError(FlowerApiService._handleError));
   }
 
   updateFlowerDetails(flower: flower): Observable<string> {
     return this.http
-      .put<string>(`${env.API_URL}/flowers/${flower.comname}`, { params: flower })
-      .pipe(catchError(FlowerApiService._handleError));
+      .put<string>(
+        `${env.API_URL}/flowers/${flower.comname}`,
+        JSON.stringify(flower),
+        {
+          headers: { "Content-Type": "application/json" }
+        }
+      )
   }
 
-  getFlowerSightings(flower: string): Observable<sighting> {
+  getFlowerSightings(flower: string): Observable<sighting[]> {
     return this.http
-      .get<sighting>(`${env.API_URL}/flowers/${flower}/sightings`)
-      .pipe(catchError(FlowerApiService._handleError));
+      .get<sighting[]>(`${env.API_URL}/flowers/${flower}/sightings`)
   }
 
   postFlowerSightings(sighting: sighting): Observable<string> {
     return this.http
-      .post<string>(`${env.API_URL}/flowers/${sighting.name}/sightings`, { params: sighting})
-      .pipe(catchError(FlowerApiService._handleError));
+      .post<string>(
+        `${env.API_URL}/flowers/${sighting.name}/sightings`,
+        JSON.stringify(sighting),
+        {
+          headers: { "Content-Type": "application/json" }
+        }
+      )
   }
 }

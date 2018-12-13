@@ -1,41 +1,285 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<div class="container">
-  <div class="header clearfix">
-    <h3 class="text-muted">Project name</h3>
+<!-- The content below is only a placeholder and can be replaced. -->
+<div class="container d-flex flex-column">
+  <div class="header clearfix row">
+    <h3 class="text-muted">{{ title }}</h3>
   </div>
 
-  <div class="jumbotron">
-    <h1 class="display-3">Jumbotron heading</h1>
-    <p class="lead">Cras justo odio, dapibus ac facilisis in, egestas eget quam. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
+  <div class="jumbotron row" id="narrow-jumbo">
+    <h1 class="display-3">FlowersDB</h1>
+    <p class="lead">
+      Who doesn't like flowers? You can look at nice pictures of 'em, record
+      your sightings of 'em, and even modify their definitions!
+    </p>
   </div>
 
-  <div class="row marketing">
-    <div class="col-lg-6">
-      <h4>Subheading</h4>
-      <p>Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.</p>
-
-      <h4>Subheading</h4>
-      <p>Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Cras mattis consectetur purus sit amet fermentum.</p>
-
-      <h4>Subheading</h4>
-      <p>Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
+  <div class="row flex-grow-1 content">
+    <div class="col-4 scroll h-100">
+      <table class="table">
+        <thead>
+          <tr>
+            <th class="align-middle">#</th>
+            <th class="align-middle">Flower Common Name</th>
+            <th>
+              <button
+                type="button"
+                class="btn btn-custom"
+                (click)="onClickRefresh()"
+              >
+                <i class="fas fa-sync"></i>
+              </button>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            *ngFor="let flower of flowerList; let i = index"
+            [class.selected]="currentFlower === flower"
+          >
+            <td>{{ i + 1 }}</td>
+            <td>{{ flower }}</td>
+            <td>
+              <button
+                type="button"
+                class="btn btn-custom"
+                (click)="onClickFlowerInfoButton(flower)"
+              >
+                <i class="fas fa-info-circle"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-
-    <div class="col-lg-6">
-      <h4>Subheading</h4>
-      <p>Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.</p>
-
-      <h4>Subheading</h4>
-      <p>Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Cras mattis consectetur purus sit amet fermentum.</p>
-
-      <h4>Subheading</h4>
-      <p>Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
+    <div class="col d-flex flex-column h-100">
+      <ng-container *ngIf="currentFlower">
+        <div class="text-center">
+          <img
+            src="{{flowerImages[currentFlower]}}"
+            class="img-fluid rounded picture-frame"
+            alt="Responsive image"
+          />
+        </div>
+        <!-- Flower details view -->
+        <div class="border rounded mt-4 mb-4 pt-2 pb-3 pl-4 pr-4">
+          <ng-container *ngIf="canEditFlower; else: details"
+            ><form
+              class="form"
+              #flowerForm="ngForm"
+              (ngSubmit)="onFormSubmitFlower(flowerForm)"
+            >
+              <div class="row">
+                <div class="col-4 form-group">
+                  <label for="comname">Common name:</label>
+                  <input
+                    class="form-control-plaintext"
+                    readonly
+                    id="comname"
+                    name="comname"
+                    placeholder="Comname"
+                    [ngModel]="flowerDetails.comname"
+                  />
+                </div>
+                <div class="col-3 form-group">
+                  <label for="genus">Genus:</label>
+                  <input
+                    class="form-control"
+                    id="genus"
+                    name="genus"
+                    placeholder="Genus"
+                    [ngModel]="flowerDetails.genus"
+                  />
+                </div>
+                <div class="col-3 form-group">
+                  <label for="species">Species:</label>
+                  <input
+                    class="form-control"
+                    id="species"
+                    name="species"
+                    placeholder="Species"
+                    [ngModel]="flowerDetails.species"
+                  />
+                </div>
+                <div class="col-2 d-flex">
+                  <button
+                    type="submit"
+                    class="btn btn-custom mt-auto mb-auto"
+                    placement="top"
+                    ngbTooltip="Submit new flower details"
+                  >
+                    <i class="fas fa-check-square"></i>
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-custom mt-auto mb-auto"
+                    (click)="cancelFlowerEdit(flowerForm)"
+                    placement="top"
+                    ngbTooltip="Cancel flower details edit"
+                  >
+                    <i class="far fa-plus-square"></i>
+                  </button>
+                </div>
+              </div>
+            </form>
+          </ng-container>
+          <ng-template #details>
+            <form class="form">
+              <div class="row">
+                <div class="col-4">
+                  <label for="comname">Common name:</label>
+                  <input
+                    class="form-control-plaintext"
+                    readonly
+                    id="comname"
+                    placeholder="Comname"
+                    name="comname"
+                    [ngModel]="flowerDetails.comname"
+                  />
+                </div>
+                <div class="col-3">
+                  <label for="genus">Genus:</label>
+                  <input
+                    class="form-control-plaintext"
+                    readonly
+                    id="genus"
+                    placeholder="Genus"
+                    name="genus"
+                    [ngModel]="flowerDetails.genus"
+                  />
+                </div>
+                <div class="col-3">
+                  <label for="species">Species:</label>
+                  <input
+                    class="form-control-plaintext"
+                    readonly
+                    id="species"
+                    placeholder="Species"
+                    name="species"
+                    [ngModel]="flowerDetails.species"
+                  />
+                </div>
+                <div class="col-2 d-flex">
+                  <button
+                    type="button"
+                    class="btn btn-custom mt-auto mb-auto"
+                    (click)="enableFlowerEdit()"
+                    placement="top"
+                    ngbTooltip="Edit flower details"
+                  >
+                    <i class="far fa-edit"></i>
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-custom mt-auto mb-auto"
+                    (click)="open(sightingModal)"
+                    placement="top"
+                    ngbTooltip="Add new sighting"
+                  >
+                    <i class="far fa-plus-square"></i>
+                  </button>
+                </div>
+              </div>
+            </form>
+          </ng-template>
+        </div>
+        <!-- Sightings Table -->
+        <div class="flex-grow-1 scroll">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Flower</th>
+                <th>Person</th>
+                <th>Location</th>
+                <th>Sighted</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let sighting of flowerSightings">
+                <td>{{ sighting.name }}</td>
+                <td>{{ sighting.person }}</td>
+                <td>{{ sighting.location }}</td>
+                <td>{{ sighting.sighted }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </ng-container>
     </div>
   </div>
 
-  <footer class="footer">
-    <p>&copy; Company 2017</p>
-  </footer>
+  <ng-template #sightingModal let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">Profile update</h4>
+      <button
+        type="button"
+        class="close"
+        aria-label="Close"
+        (click)="modal.dismiss('Cross click')"
+      >
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form
+        class="form"
+        #sightingForm="ngForm"
+        (ngSubmit)="onFormSubmitSighting(sightingForm)"
+      >
+        <div class="form-group">
+          <label for="sightingName">Flower Name:</label>
+          <input
+            id="sightingName"
+            class="form-control"
+            name="name"
+            [ngModel]="currentFlower"
+            readonly
+          />
+        </div>
+        <div class="form-group">
+          <label for="person">Person:</label>
+          <input id="person" class="form-control" name="person" ngModel />
+        </div>
+        <div class="form-group">
+          <label for="location">Location:</label>
+          <input id="location" class="form-control" name="location" ngModel />
+        </div>
+        <div class="form-group">
+          <label for="location">Sighted:</label>
+          <div class="row ml-1 mr-1">
+            <input
+              type="text"
+              class="form-control col"
+              name="sighted"
+              ngbDatepicker
+              #d="ngbDatepicker"
+              ngModel
+            />
+            <button
+              type="button"
+              class="btn btn-primary col-1 ml-2"
+              (click)="d.toggle()"
+            >
+              <i class="fas fa-calendar"></i>
+            </button>
+          </div>
+        </div>
+        <div
+          class="form-group"
+          style="visibility: hidden; height: 0rem; margin: 0rem"
+        >
+          <button #submitSighting></button>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button
+        type="button"
+        class="btn btn-outline-dark"
+        (click)="submitSighting.click()"
+      >
+        Save
+      </button>
+    </div>
+  </ng-template>
 
-</div> 
-
+  <footer class="footer"><p>&copy; Fernando Daniel Quintero</p></footer>
+</div>

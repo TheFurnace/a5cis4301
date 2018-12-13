@@ -11,6 +11,15 @@
             "options": {
                 "cwd": "${workspaceRoot}/backend"
             }
+        },
+        {
+            "label": "ng serve",
+            "type": "shell",
+            "command": "ng serve -o",
+            "problemMatcher": [],
+            "options": {
+                "cwd": "${workspaceRoot}/frontend"
+            }
         }
     ]
 }

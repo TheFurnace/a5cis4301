@@ -24,7 +24,7 @@ export class BingApiService {
         {
           headers: this.headers,
           params: {
-              q: query
+            q: query
           }
         }
       )
@@ -33,6 +33,9 @@ export class BingApiService {
   }
 
   getURLFromResult(response): string {
-      return response.value[0].contentUrl  
+    if (response.value[0]) {
+      let url = response.value[0].contentUrl;
+      return url;
+    } else return "http://www.browsertechnicalsupportnumbers.com/wp-content/uploads/2017/08/Troubleshoot-Opera-Browser-Incompatibility-Error.png"
   }
 }

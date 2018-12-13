@@ -1,0 +1,33 @@
+.container {
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.content {
+  overflow: hidden;
+}
+
+.scroll {
+  overflow-y: scroll;
+}
+
+.btn-custom {
+    background-color: inherit;
+    &:hover {
+        background-color: #dddddd5b;
+    }
+}
+
+.picture-frame {
+    max-height: 28rem;
+}
+
+tr.selected {
+    background-color: #e3fcff;
+}
+
+#narrow-jumbo {
+    padding: 2rem;
+}
